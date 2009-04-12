@@ -1,0 +1,12 @@
+﻿1 = deposititem
+2 = withdrawitem
+3 = moveitem
+4 = depositmoney
+5 = withdrawmoney
+6 = repair
+7 = moveitem
+
+my gusses:
+
+8 = money withdrawn to buy tab
+9 = buying tab.  amount of money listed is how much it costs

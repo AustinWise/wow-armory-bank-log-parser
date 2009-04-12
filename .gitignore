@@ -1,0 +1,8 @@
+*.vssscc
+*.suo
+*proj.vspscc
+*proj.user
+_sgbak
+bin
+obj
+desktop.ini
