@@ -1,6 +1,6 @@
 # Wow Armory Bank Parser
 This consists of two programs: the first downloads the bank log from [wowarmory.com](http://wowarmory.com) while the second parses the logs and lets you do some querying.
-Currently these programs are not very user friendly as the settings are hard coded.  Also, the downloader has not been updated since Blizzard switched to using battle.net account for log-in, so it probably does not work.
+Currently these programs are not very user friendly as some settings are hard coded.
 
 
 ## Dependencies

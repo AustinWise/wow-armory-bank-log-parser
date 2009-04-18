@@ -26,25 +26,32 @@ Public Class BankHistory
         Dim doc As New XPathDocument(fs)
 
         Dim nav As XPathNavigator = doc.CreateNavigator()
+        For Each entry As XPathNavigator In nav.Select("/page/guildInfo/guildBank/banklogs/banklog")
+            parseFileInnerLoop(entry)
+        Next
         For Each entry As XPathNavigator In nav.Select("/page/guildBank/banklogs/banklog")
-            Dim money As Integer = entry.SelectSingleNode("@money").ValueAsInt
-            If money = 0 Then
-                Dim tran As New ItemTransaction(entry)
-                If tran.TransactionType = TransactionType.General Then
-                    Dim q = From i In m_items Where i.Occured = tran.Occured And i.ItemId = tran.ItemId And i.Count = tran.Count And i.Character = tran.Character Select i
-                    If q.Count() = 0 Then
-                        m_items.Add(tran)
-                    End If
-                End If
-            Else
-                Dim tran As New MoneyTransaction(entry)
-                If (tran.TransactionType = TransactionType.General) Or tran.TransactionType = TransactionType.Repairs Then
-                    m_money.Add(tran)
-                End If
-            End If
+            parseFileInnerLoop(entry)
         Next
 
         fs.Dispose()
+    End Sub
+
+    Private Sub parseFileInnerLoop(ByVal entry As XPathNavigator)
+        Dim money As Integer = entry.SelectSingleNode("@money").ValueAsInt
+        If money = 0 Then
+            Dim tran As New ItemTransaction(entry)
+            If tran.TransactionType = TransactionType.General Then
+                Dim q = From i In m_items Where i.Occured = tran.Occured And i.ItemId = tran.ItemId And i.Count = tran.Count And i.Character = tran.Character Select i
+                If q.Count() = 0 Then
+                    m_items.Add(tran)
+                End If
+            End If
+        Else
+            Dim tran As New MoneyTransaction(entry)
+            If (tran.TransactionType = TransactionType.General) Or tran.TransactionType = TransactionType.Repairs Then
+                m_money.Add(tran)
+            End If
+        End If
     End Sub
 
     Public Function GetNetMoneyFlow() As IDictionary(Of String, Integer)
