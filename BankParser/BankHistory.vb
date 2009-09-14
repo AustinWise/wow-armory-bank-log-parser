@@ -14,10 +14,30 @@ Public Class BankHistory
     Private m_items As IList(Of ItemTransaction) = New List(Of ItemTransaction)()
 
 
+    Public ReadOnly Property ItemTransactions() As IList(Of ItemTransaction)
+        Get
+            Return m_items
+        End Get
+    End Property
+
+    Public ReadOnly Property MoneyTransactions() As IList(Of MoneyTransaction)
+        Get
+            Return m_money
+        End Get
+    End Property
+
+
     Public Sub New(ByVal dataLocation As String)
-        Dim di As New DirectoryInfo(dataLocation)
+        parseFolder(dataLocation)
+    End Sub
+
+    Private Sub parseFolder(ByVal folderPath As String)
+        Dim di As New DirectoryInfo(folderPath)
         For Each f As FileInfo In di.GetFiles("*.xml")
             parseFile(f.FullName)
+        Next
+        For Each d As DirectoryInfo In di.GetDirectories()
+            parseFolder(d.FullName)
         Next
     End Sub
 
@@ -41,7 +61,7 @@ Public Class BankHistory
         If money = 0 Then
             Dim tran As New ItemTransaction(entry)
             If tran.TransactionType = TransactionType.General Then
-                Dim q = From i In m_items Where i.Occured = tran.Occured And i.ItemId = tran.ItemId And i.Count = tran.Count And i.Character = tran.Character Select i
+                Dim q = From i In m_items Where i.Occured = tran.Occured And i.ItemId = tran.ItemId And i.Count = tran.Count Select i
                 If q.Count() = 0 Then
                     m_items.Add(tran)
                 End If
@@ -49,7 +69,10 @@ Public Class BankHistory
         Else
             Dim tran As New MoneyTransaction(entry)
             If (tran.TransactionType = TransactionType.General) Or tran.TransactionType = TransactionType.Repairs Then
-                m_money.Add(tran)
+                Dim q = From i In m_money Where i.Occured = tran.Occured And i.Amount = tran.Amount And i.TransactionType = tran.TransactionType Select i
+                If q.Count() = 0 Then
+                    m_money.Add(tran)
+                End If
             End If
         End If
     End Sub

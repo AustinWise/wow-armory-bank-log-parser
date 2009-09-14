@@ -11,6 +11,18 @@
         helpMessage()
         Console.WriteLine("Please push a key to select an option:")
 
+        'Dim q = From o In bank.ItemTransactions Where o.ItemId = 46376 Select o
+
+        'For Each t In q
+        '    Console.WriteLine("date: {0}", t.Occured)
+        '    Console.WriteLine("person: {0}", t.Character)
+        '    Console.WriteLine("number: {0}", t.Count)
+        '    Console.WriteLine()
+        'Next
+
+        'Return
+
+
         While True
             Dim gotAKey As Boolean = False
             Select Case Console.ReadKey().Key

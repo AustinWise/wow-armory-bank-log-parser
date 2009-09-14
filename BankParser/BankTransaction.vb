@@ -4,7 +4,15 @@ Public Class BankTransaction
 
     Public Sub New(ByVal nav As XPathNavigator)
         Me.m_occured = FromUnixTime(nav.SelectSingleNode("@ts").ValueAsLong)
-        Me.m_character = nav.SelectSingleNode("@player").Value
+
+        'if a character trasnfers off the realm, their transactions will become unknown
+        Dim unknownAttr = nav.SelectSingleNode("@unknown")
+        If unknownAttr IsNot Nothing AndAlso unknownAttr.ValueAsInt = 1 Then
+            Me.m_character = "~~Unknown~~"
+        Else
+            Me.m_character = nav.SelectSingleNode("@player").Value
+        End If
+
         Me.m_rawType = nav.SelectSingleNode("@type").ValueAsInt
 
         Select Case RawType
@@ -27,12 +35,6 @@ Public Class BankTransaction
             Case 9
                 Me.m_transactionType = TransactionType.BuyingTab
         End Select
-
-        'ANF special case, does not apply to other guilds
-        Dim rank As Integer = nav.SelectSingleNode("@rank").ValueAsInt
-        If Me.m_character = "null" And rank = 0 Then
-            Me.m_character = "Fuhr"
-        End If
     End Sub
 
     Private m_occured As DateTime
