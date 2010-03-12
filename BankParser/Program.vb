@@ -4,24 +4,13 @@
 
     Sub Main()
         Console.WriteLine("Please wait while bank data is loaded from '{0}'.", dataLocation)
-        Dim bank As New BankHistory(dataLocation)
+        Dim alts As New AltMap(dataLocation + "alts.txt")
+        Dim bank As New BankHistory(alts, dataLocation, True)
 
         Console.WriteLine("Bank data contains data ranging from {0} to {1}", bank.GetFirstTransactionDate(), bank.GetLastestTransactionDate())
 
         helpMessage()
         Console.WriteLine("Please push a key to select an option:")
-
-        'Dim q = From o In bank.ItemTransactions Where o.ItemId = 46376 Select o
-
-        'For Each t In q
-        '    Console.WriteLine("date: {0}", t.Occured)
-        '    Console.WriteLine("person: {0}", t.Character)
-        '    Console.WriteLine("number: {0}", t.Count)
-        '    Console.WriteLine()
-        'Next
-
-        'Return
-
 
         While True
             Dim gotAKey As Boolean = False

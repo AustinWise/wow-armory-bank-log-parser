@@ -45,10 +45,13 @@ Public Class BankTransaction
     End Property
 
     Private m_character As String
-    Public ReadOnly Property Character() As String
+    Public Property Character() As String
         Get
             Return Me.m_character
         End Get
+        Set(ByVal value As String)
+            Me.m_character = value
+        End Set
     End Property
 
     Private m_transactionType As TransactionType = TransactionType.Unknown

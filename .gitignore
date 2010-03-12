@@ -6,3 +6,4 @@ _sgbak
 bin
 obj
 desktop.ini
+*.cache

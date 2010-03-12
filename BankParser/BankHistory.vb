@@ -3,6 +3,7 @@ Imports System.Xml.XPath
 
 Public Class BankHistory
 
+    Private alts As AltMap
 
     Private ReadOnly motes As Integer() = {22572, 22573, 22574, 22575, 22576, 22577, 22578}
     Private ReadOnly primals As Integer() = {22451, 22452, 21884, 21886, 22457, 22456, 21885}
@@ -26,18 +27,20 @@ Public Class BankHistory
         End Get
     End Property
 
-
-    Public Sub New(ByVal dataLocation As String)
-        parseFolder(dataLocation)
+    Public Sub New(ByVal alts As AltMap, ByVal dataLocation As String, Optional ByVal recurseDirectories As Boolean = True)
+        Me.alts = alts
+        parseFolder(dataLocation, recurseDirectories)
     End Sub
 
-    Private Sub parseFolder(ByVal folderPath As String)
+    Private Sub parseFolder(ByVal folderPath As String, ByVal recurseDirectories As Boolean)
         Dim di As New DirectoryInfo(folderPath)
+        If recurseDirectories Then
+            For Each d As DirectoryInfo In di.GetDirectories()
+                parseFolder(d.FullName, True)
+            Next
+        End If
         For Each f As FileInfo In di.GetFiles("*.xml")
             parseFile(f.FullName)
-        Next
-        For Each d As DirectoryInfo In di.GetDirectories()
-            parseFolder(d.FullName)
         Next
     End Sub
 
@@ -60,6 +63,7 @@ Public Class BankHistory
         Dim money As Integer = entry.SelectSingleNode("@money").ValueAsInt
         If money = 0 Then
             Dim tran As New ItemTransaction(entry)
+            tran.Character = alts.MapName(tran.Character)
             If tran.TransactionType = TransactionType.General Then
                 Dim q = From i In m_items Where i.Occured = tran.Occured And i.ItemId = tran.ItemId And i.Count = tran.Count Select i
                 If q.Count() = 0 Then
@@ -68,6 +72,7 @@ Public Class BankHistory
             End If
         Else
             Dim tran As New MoneyTransaction(entry)
+            tran.Character = alts.MapName(tran.Character)
             If (tran.TransactionType = TransactionType.General) Or tran.TransactionType = TransactionType.Repairs Then
                 Dim q = From i In m_money Where i.Occured = tran.Occured And i.Amount = tran.Amount And i.TransactionType = tran.TransactionType Select i
                 If q.Count() = 0 Then
