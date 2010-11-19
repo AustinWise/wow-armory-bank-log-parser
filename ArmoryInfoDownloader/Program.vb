@@ -52,16 +52,15 @@ Module Program
     End Function
 
     Private Sub login(ByVal username As String, ByVal password As String)
-        Dim prereq As New ArmoryDownloadRequest(New Uri("http://www.wowarmory.com/"))
+        Dim prereq As New ArmoryDownloadRequest(New Uri("https://us.battle.net/login/en/login.xml?ref=http%3A%2F%2Fwww.wowarmory.com%2Findex.xml&app=armory"))
         prereq.SaveCookiesReturnedByServer = True
         dlm.DownloadString(prereq)
 
-
-        Dim req As New ArmoryDownloadRequest(New Uri("https://us.battle.net/login/login.xml?ref=http%3A%2F%2Fwww.wowarmory.com%2Findex.xml&app=armory"))
+        Dim req As New ArmoryDownloadRequest(New Uri("https://us.battle.net/login/en/login.xml?app=armory&ref=http%3A%2F%2Fwww.wowarmory.com%2Findex.xml"))
         req.SaveCookiesReturnedByServer = True
         req.PostValues.Add("accountName", username)
         req.PostValues.Add("password", password)
-        'req.PostValues.Add("redirectUrl", "index.xml")
+        req.PostValues.Add("persistLogin", "on")
         dlm.DownloadString(req)
     End Sub
 
